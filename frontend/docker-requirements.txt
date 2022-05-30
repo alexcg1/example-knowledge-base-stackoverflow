@@ -1,3 +1,2 @@
 streamlit==1.8.1
 streamlit-chat==0.0.2.1
-jina==3.2.10 # put at end due to click conflicts

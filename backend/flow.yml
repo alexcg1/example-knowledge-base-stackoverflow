@@ -1,14 +1,21 @@
 jtype: Flow
 with:
-  protocol: http
+  protocol: http  # remove the port
 executors:
   - name: encoder
-    uses: jinahub+docker://SpacyTextEncoder/v0.4
+    uses: jinahub+docker://SpacyTextEncoder/v0.4  # run everything in docker
+    uses_with:
+      model_name: 'en_core_web_md'
+    replicas: 2  # 2 replicas for faster encoding
+    resources:
+      memory:
+        8G  # give our encoder more memory to work with
   - name: indexer
     uses: jinahub+docker://AnnLiteIndexer/0.3.0
     uses_with:
-      dim: 300  # the model has 300 dimensions
+      dim: 300
       columns:
-        ...  # We'll fill this in soon
+        - ['answer_type', 'str']
+        - ['source', 'str']
     uses_metas:
       workspace: workspace

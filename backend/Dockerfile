@@ -1,4 +1,4 @@
-FROM jinaai/jina:3.2.10-py39-standard
+FROM jinaai/jina:3.4.10-py39-standard
 
 COPY . /workspace
 WORKDIR /workspace

@@ -1,30 +1,19 @@
 from docarray import DocumentArray, Document
-from jina import Flow
-from config import DATA_FILE, NUM_DOCS, PORT
+from jina import Flow, Client
+from config import DATA_FILE, NUM_DOCS, HOST
 import click
 
-
-
-flow = (
-    Flow(protocol="http", port=PORT)
-    .add(
-        name="encoder",
-        uses="jinahub://TransformerTorchEncoder",
-        uses_with={
-            "pretrained_model_name_or_path": "sentence-transformers/paraphrase-mpnet-base-v2"
-        },
-        install_requirements=True,
-    )
-    .add(uses="jinahub://SimpleIndexer", install_requirements=True)
-)
+flow = Flow.load_config("flow.yml")
 
 
 def index(num_docs=NUM_DOCS):
-    qa_docs = DocumentArray.from_csv(
+    docs = DocumentArray.from_csv(
         DATA_FILE, field_resolver={"question": "text"}, size=num_docs
     )
-    with flow:
-        flow.index(qa_docs, show_progress=True)
+    # with flow:
+        # flow.index(docs, show_progress=True)
+    client = Client(host=HOST)
+    client.index(docs, show_progress=True)
 
 
 def search_grpc(string: str):
