@@ -1,0 +1,14 @@
+jtype: Flow
+with:
+  protocol: http
+executors:
+  - name: encoder
+    uses: jinahub+docker://SpacyTextEncoder/v0.4
+  - name: indexer
+    uses: jinahub+docker://AnnLiteIndexer/0.3.0
+    uses_with:
+      dim: 300  # the model has 300 dimensions
+      columns:
+        ...  # We'll fill this in soon
+    uses_metas:
+      workspace: workspace
