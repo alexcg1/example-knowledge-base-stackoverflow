@@ -6,19 +6,19 @@ services:
     environment:
       - SERVER=backend
     ports:
-      - 8600:8600
-    depends_on:
-      - backend
+      - 8700:8700
+    #depends_on:
+      #- backend
     volumes:
       - ./frontend:/workspace
-      - ./data:/data
-    restart: always
-
-  backend:
-    build: backend
-    ports:
-      - 23456:23456
-    #volumes:
-      #- ./workspace:/workspace
       #- ./data:/data
     restart: always
+
+  #backend:
+    #build: backend
+    #ports:
+      #- 23456:23456
+    ##volumes:
+      ##- ./workspace:/workspace
+      ##- ./data:/data
+    #restart: always
