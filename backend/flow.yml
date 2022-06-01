@@ -2,6 +2,10 @@ jtype: Flow
 with:
   protocol: http  # remove the port
 executors:
+  - name: html_stripper
+    uses: jinahub+docker://HtmlStripper/v0.1  # strip html from doc.text
+  - name: sentencizer
+    uses: jinahub+docker://SpacySentencizer
   - name: encoder
     uses: jinahub+docker://SpacyTextEncoder/v0.4  # run everything in docker
     uses_with:
@@ -15,7 +19,8 @@ executors:
     uses_with:
       dim: 300
       columns:
-        - ['answer_type', 'str']
-        - ['source', 'str']
+        - ['CreationDate', 'str']
+        - ['Score', 'int']
+        - ['IsAcceptedAnswer', 'bool']
     uses_metas:
       workspace: workspace

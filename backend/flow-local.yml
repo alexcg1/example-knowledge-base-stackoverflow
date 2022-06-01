@@ -1,0 +1,30 @@
+jtype: Flow
+with:
+  protocol: http
+  port: 12345
+executors:
+  - name: html_stripper
+    uses: jinahub://HtmlStripper/v0.1  # strip html from doc.text
+    install_requirements: true
+  - name: sentencizer
+    uses: jinahub://SpacySentencizer
+    install_requirements: true
+  - name: encoder
+    uses: jinahub://SpacyTextEncoder/v0.4
+    uses_with:
+      model_name: 'en_core_web_md'
+      traversal_paths: "@c"
+    install_requirements: true
+  - name: indexer
+    uses: jinahub://AnnLiteIndexer/0.3.0
+    uses_with:
+      index_traversal_paths: "@c"
+      search_traversal_paths: "@c"
+      dim: 300
+      columns:
+        - ['CreationDate', 'float']
+        - ['Score', 'int']
+        - ['IsAcceptedAnswer', 'str']
+    uses_metas:
+      workspace: workspace
+    install_requirements: true
