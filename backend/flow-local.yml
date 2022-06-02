@@ -1,25 +1,20 @@
 jtype: Flow
 with:
   protocol: http
-  port: 12345
 executors:
   - name: html_stripper
-    uses: jinahub://HtmlStripper/v0.1  # strip html from doc.text
-    install_requirements: true
+    uses: jinahub+docker://HtmlStripper/v0.1  # strip html from doc.text
   - name: sentencizer
-    uses: jinahub://SpacySentencizer
-    install_requirements: true
+    uses: jinahub+docker://SpacySentencizer/v0.6
   - name: encoder
-    uses: jinahub://SpacyTextEncoder/v0.4
+    uses: jinahub+docker://SpacyTextEncoder/v0.4
     uses_with:
       model_name: 'en_core_web_md'
-      traversal_paths: "@c"
-    install_requirements: true
+    resources:
+      memory: 8G
   - name: indexer
-    uses: jinahub://AnnLiteIndexer/0.3.0
+    uses: jinahub+docker://AnnLiteIndexer/0.3.0
     uses_with:
-      index_traversal_paths: "@c"
-      search_traversal_paths: "@c"
       dim: 300
       columns:
         - ['CreationDate', 'float']
@@ -27,4 +22,3 @@ executors:
         - ['IsAcceptedAnswer', 'str']
     uses_metas:
       workspace: workspace
-    install_requirements: true

@@ -1,26 +1,24 @@
 jtype: Flow
 with:
-  protocol: http  # remove the port
+  protocol: http
 executors:
   - name: html_stripper
     uses: jinahub+docker://HtmlStripper/v0.1  # strip html from doc.text
   - name: sentencizer
-    uses: jinahub+docker://SpacySentencizer
+    uses: jinahub+docker://SpacySentencizer/v0.6
   - name: encoder
-    uses: jinahub+docker://SpacyTextEncoder/v0.4  # run everything in docker
+    uses: jinahub+docker://SpacyTextEncoder/v0.4
     uses_with:
       model_name: 'en_core_web_md'
-    replicas: 2  # 2 replicas for faster encoding
     resources:
-      memory:
-        8G  # give our encoder more memory to work with
+      memory: 8G
   - name: indexer
     uses: jinahub+docker://AnnLiteIndexer/0.3.0
     uses_with:
       dim: 300
       columns:
-        - ['CreationDate', 'str']
+        - ['CreationDate', 'float']
         - ['Score', 'int']
-        - ['IsAcceptedAnswer', 'bool']
+        - ['IsAcceptedAnswer', 'str']
     uses_metas:
       workspace: workspace

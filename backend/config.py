@@ -1,7 +1,4 @@
-PORT = 23456
-# DATABASE_NAME = "covid-qa.db"
-# TABLE_NAME = "questions"
-HOST = "https://8bae9ebaf9.wolf.jina.ai"
+HOST = "https://knowledgebasestackoverflow-dfef37a421.wolf.jina.ai"
 
 # Data
 DATA_FILE = "./data/Answers.csv"

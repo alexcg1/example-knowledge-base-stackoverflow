@@ -1,7 +1,6 @@
 from docarray import DocumentArray, Document
 from jina import Flow, Client
 from config import DATA_FILE, NUM_DOCS, HOST, TEXT_FIELD
-# from executor import HtmlStripper
 import click
 
 flow = Flow.load_config("flow.yml")
@@ -14,15 +13,15 @@ def index_local(num_docs=NUM_DOCS):
     )
 
     with flow:
-        docs = flow.index(docs, show_progress=True)
-    # for doc in docs:
-        # print(doc.text)
-        # print(doc.tags)
+        docs = flow.index(docs, show_progress=True, parameters={"traversal_path": "@r"})
 
-        # for chunk in doc.chunks:
-            # print(chunk.text)
+    for doc in docs:
+        print(doc.text)
+        print("\t", doc.tags)
 
-
+        print("\t", "Chunks:", len(doc.chunks))
+        for chunk in doc.chunks:
+            print("\t\t", chunk.text)
 
 
 def index(num_docs=NUM_DOCS):
@@ -30,7 +29,8 @@ def index(num_docs=NUM_DOCS):
         DATA_FILE, field_resolver={TEXT_FIELD: "text"}, size=num_docs
     )
     client = Client(host=HOST)
-    client.index(docs, show_progress=True)
+    # client.index(docs, show_progress=True)
+    client.post("/update", docs, show_progress=True)
 
 
 def search_grpc():
@@ -39,12 +39,11 @@ def search_grpc():
         query = input("What's your query? ")
         doc = Document(text=query)
         with flow:
-            results = flow.search(doc)
-
-        # print(results[0].matches)
+            results = flow.search(doc, parameters={"traversal_path": "@r"})
 
         for match in results[0].matches:
             print(match.text)
+            print(match.tags)
             print("---")
 
 
@@ -58,7 +57,9 @@ def search():
 @click.option(
     "--task",
     "-t",
-    type=click.Choice(["index", "search", "index_local", "search_grpc"], case_sensitive=False),
+    type=click.Choice(
+        ["index", "search", "index_local", "search_grpc"], case_sensitive=False
+    ),
 )
 @click.option("--num_docs", "-n", default=NUM_DOCS)
 def main(task: str, num_docs):
