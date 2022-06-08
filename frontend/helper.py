@@ -1,6 +1,6 @@
 from docarray import Document
 from jina import Client
-from config import HOST
+from config import HOST, DATABASE_FILE
 
 result_template = """### {title}
 
@@ -28,7 +28,7 @@ def search_by_text(input, server=HOST):
 
     return matches
 
-def get_answers(question_id=79709, db_file="../data/answers.sqlite", table_name="Answers", id_field="ParentId"):
+def get_answers(question_id, db_file=DATABASE_FILE, table_name="Answers", id_field="ParentId"):
     import sqlite3 as db
 
     conn = db.connect(db_file)
@@ -46,7 +46,6 @@ def get_answers(question_id=79709, db_file="../data/answers.sqlite", table_name=
             "IsAcceptedAnswer": row[5]
         }
         answers.append(answer)
-        # answers.append(row["Body"])
 
     return answers
 

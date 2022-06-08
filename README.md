@@ -1,10 +1,6 @@
-# Jina Chatbot
+# Jina Knowledge Base Search
 
-This simple example adapts [Jina Hello Chatbot](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/) in the following ways:
-
-- Use [Jina Hub](https://hub.jina.ai) Executors
-- Use [Streamlit](https://streamlit.io/) front-end (with the awesome [Streamlit chat](https://github.com/AI-Yash/st-chat) library)
-- Easy deployment with Docker-Compose
+This is a search engine for Stack Overflow *questions* (i.e. not answers). It will return matching questions with associated answers from a given dataset.
 
 ## Run
 

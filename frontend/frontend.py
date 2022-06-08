@@ -13,11 +13,11 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Jina Stack Overflow Knowledge Base Search",
-    page_icon=":book:",
+    page_icon="🖱️",
     layout="wide",
 )
 
-st.header("🔖 Jina Stack Overflow Knowledge Base Search")
+st.header("🖱️ Jina Stack Overflow Knowledge Base Search")
 
 st.sidebar.markdown(sidebar_text)
 
@@ -34,7 +34,6 @@ if search_button:
     results = search_by_text(user_input)
 
     for match in results:
-        # rating_icon = get_rating(match.tags["IsAcceptedAnswer"])
         with st.expander(label=f"{match.tags['Score']} ⭐ | {match.text[:200]}"):
             st.markdown(f"### {match.text}")
             st.markdown(html_to_markdown(match.tags["Body"]))

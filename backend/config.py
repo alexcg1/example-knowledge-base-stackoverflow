@@ -1,5 +1,4 @@
 HOST = "grpcs://kbstackoverflow-6b2a47012d.wolf.jina.ai"
-# HOST = "http://0.0.0.0:12345"
 
 # Data
 DATA_FILE = "../data/Questions.csv"
