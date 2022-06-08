@@ -1,11 +1,11 @@
 jtype: Flow
 with:
-  protocol: http
+  protocol: grpc
 executors:
-  - name: html_stripper
-    uses: jinahub+docker://HtmlStripper/v0.1  # strip html from doc.text
-  - name: sentencizer
-    uses: jinahub+docker://SpacySentencizer/v0.6
+  #- name: html_stripper
+    #uses: jinahub+docker://HtmlStripper/v0.1  # strip html from doc.text
+  #- name: sentencizer
+    #uses: jinahub+docker://SpacySentencizer/v0.6
   - name: encoder
     uses: jinahub+docker://SpacyTextEncoder/v0.4
     uses_with:
@@ -22,3 +22,7 @@ executors:
         - ['IsAcceptedAnswer', 'str']
     uses_metas:
       workspace: workspace
+    jcloud:
+      capacity: on-demand
+    resources:
+      memory: 8G

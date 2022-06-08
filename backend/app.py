@@ -3,38 +3,27 @@ from jina import Flow, Client
 from config import DATA_FILE, NUM_DOCS, HOST, TEXT_FIELD
 import click
 
-flow = Flow.load_config("flow.yml")
 
-
-def index_local(num_docs=NUM_DOCS):
-    flow = Flow.load_config("flow-local.yml")
+def index(cloud: bool, num_docs: int = NUM_DOCS):
+    print(f"Processing {num_docs} Documents")
     docs = DocumentArray.from_csv(
         DATA_FILE, field_resolver={TEXT_FIELD: "text"}, size=num_docs
     )
-
-    with flow:
-        docs = flow.index(docs, show_progress=True, parameters={"traversal_path": "@r"})
-
-    for doc in docs:
-        print(doc.text)
-        print("\t", doc.tags)
-
-        print("\t", "Chunks:", len(doc.chunks))
-        for chunk in doc.chunks:
-            print("\t\t", chunk.text)
-
-
-def index(num_docs=NUM_DOCS):
-    docs = DocumentArray.from_csv(
-        DATA_FILE, field_resolver={TEXT_FIELD: "text"}, size=num_docs
-    )
-    client = Client(host=HOST)
-    # client.index(docs, show_progress=True)
-    client.post("/update", docs, show_progress=True)
+    if cloud:
+        client = Client(host=HOST)
+        client.post(
+            "/update", docs, show_progress=True, parameters={"traversal_path": "@r"}
+        )
+    else:
+        flow = Flow.load_config("flows/flow-local.yml")
+        with flow:
+            docs = flow.index(
+                docs, show_progress=True, parameters={"traversal_path": "@r"}
+            )
 
 
 def search_grpc():
-    flow = Flow.load_config("flow-local.yml")
+    flow = Flow.load_config("flows/flow-local.yml")
     while True:
         query = input("What's your query? ")
         doc = Document(text=query)
@@ -47,8 +36,8 @@ def search_grpc():
             print("---")
 
 
-def search():
-    flow = Flow.load_config("flow-local.yml")
+def serve():
+    flow = Flow.load_config("flows/flow-local.yml")
     with flow:
         flow.block()
 
@@ -57,18 +46,15 @@ def search():
 @click.option(
     "--task",
     "-t",
-    type=click.Choice(
-        ["index", "search", "index_local", "search_grpc"], case_sensitive=False
-    ),
+    type=click.Choice(["index", "serve", "search_grpc"], case_sensitive=False),
 )
 @click.option("--num_docs", "-n", default=NUM_DOCS)
-def main(task: str, num_docs):
+@click.option("--cloud", "-c", is_flag=True)
+def main(task: str, num_docs: int, cloud: bool):
     if task == "index":
-        index(num_docs=num_docs)
-    elif task == "index_local":
-        index_local(num_docs=num_docs)
-    elif task == "search":
-        search()
+        index(cloud, num_docs=num_docs)
+    elif task == "serve":
+        serve()
     elif task == "search_grpc":
         search_grpc()
     else:

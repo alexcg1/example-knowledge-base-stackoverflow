@@ -1,1 +1,1 @@
-HOST = "https://knowledgebasestackoverflow-dfef37a421.wolf.jina.ai"
+HOST = "grpcs://kbstackoverflow-6b2a47012d.wolf.jina.ai"
