@@ -1,14 +1,4 @@
-from jina import Client
-from helper import (
-    result_template,
-    sidebar_text,
-    get_rating,
-    search_by_text,
-    get_answers,
-    html_to_markdown
-)
-from config import HOST
-from docarray import Document
+from helper import sidebar_text, search_by_text, get_answers, html_to_markdown
 import streamlit as st
 
 st.set_page_config(
@@ -18,6 +8,9 @@ st.set_page_config(
 )
 
 st.header("🖱️ Jina Stack Overflow Knowledge Base Search")
+st.markdown(
+    "#### Search engine for [Stack Overflow messages about R](https://www.kaggle.com/datasets/stackoverflow/)`*`"
+)
 
 st.sidebar.markdown(sidebar_text)
 
@@ -54,3 +47,7 @@ if search_button:
                         f"**Score:** {answer['Score']} | **Accepted**: {answer['IsAcceptedAnswer']}"
                     )
                     st.markdown("---")
+
+st.markdown(
+    "`*` Why not Python? The [Python dataset](https://www.kaggle.com/datasets/stackoverflow/pythonquestions) had some bad lines in the CSV and it choked."
+)
