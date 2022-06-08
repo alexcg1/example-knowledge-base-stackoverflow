@@ -1,11 +1,11 @@
-FROM jinaai/jina:3.4.10-py39-standard
+FROM jinaai/jina:3.4.11-py39-standard
 
 COPY . /workspace
 WORKDIR /workspace
 
-RUN pip install -r docker-requirements.txt
+RUN pip install -r requirements.txt
 
-EXPOSE 8600
+EXPOSE 8700
 
 ENTRYPOINT ["streamlit", "run"]
 CMD ["frontend.py"]
