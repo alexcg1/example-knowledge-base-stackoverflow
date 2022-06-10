@@ -1,0 +1,101 @@
+Id,OwnerUserId,CreationDate,Score,Title,Body
+77434,14008,2008-09-16T21:40:29Z,171,How to access the last value in a vector?,"<p>Suppose I have a vector that is nested in a dataframe one or two levels.  Is there a quick and dirty way to access the last value, without using the <code>length()</code> function?  Something ala PERL's <code>$#</code> special var?</p>
+
+<p>So I would like something like:</p>
+
+<pre><code>dat$vec1$vec2[$#]
+</code></pre>
+
+<p>instead of</p>
+
+<pre><code>dat$vec1$vec2[length(dat$vec1$vec2)]
+</code></pre>
+"
+79709,NA,2008-09-17T03:39:16Z,3,Worse sin: side effects or passing massive objects?,"<p>I have a function inside a loop inside a function. The inner function acquires and stores a large vector of data in memory (as a global variable... I'm using ""R"" which is like ""S-Plus""). The loop loops through a long list of data to be acquired. The outer function starts the process and passes in the list of datasets to be acquired.</p>
+
+<pre><code>for (dataset in list_of_datasets) {
+  for (datachunk in dataset) {
+    &lt;process datachunk&gt;
+    &lt;store result? as vector? where?&gt;
+  }
+}
+</code></pre>
+
+<p>I programmed the inner function to store each dataset before moving to the next, so all the work of the outer function occurs as side effects on global variables... a big no-no. Is this better or worse than collecting and returning a giant, memory-hogging vector of vectors? Is there a superior third approach?</p>
+
+<p>Would the answer change if I were storing the data vectors in a database rather than in memory? Ideally, I'd like to be able to terminate the function (or have it fail due to network timeouts) without losing all the information processed prior to termination.</p>
+"
+95007,15842,2008-09-18T17:59:19Z,56,Explain the quantile() function in R,"<p>I've been mystified by the R quantile function all day.  </p>
+
+<p>I have an intuitive notion of how quantiles work, and an M.S. in stats, but boy oh boy, the documentation for it is confusing to me.  </p>
+
+<p>From the docs:</p>
+
+<blockquote>
+  <p>Q[i](p) = (1 - gamma) x[j] + gamma
+  x[j+1],</p>
+</blockquote>
+
+<p>I'm with it so far.  For a type <em>i</em> quantile, it's an interpolation between x[j] and x [j+1], based on some mysterious constant <em>gamma</em></p>
+
+<blockquote>
+  <p>where 1 &lt;= i &lt;= 9, (j-m)/n &lt;= p &lt;
+  (j-m+1)/ n, x[j] is the jth order
+  statistic, n is the sample size, and m
+  is a constant determined by the sample
+  quantile type. Here gamma depends on
+  the fractional part of g = np+m-j. </p>
+</blockquote>
+
+<p>So, how calculate j?   m?</p>
+
+<blockquote>
+  <p>For the continuous sample quantile
+  types (4 through 9), the sample
+  quantiles can be obtained by linear
+  interpolation between the kth order
+  statistic and p(k): </p>
+  
+  <p>p(k) = (k - alpha) / (n - alpha - beta
+  + 1),
+  where α and β are constants determined
+  by the type. Further, m = alpha + p(1
+  - alpha - beta), and gamma = g.</p>
+</blockquote>
+
+<p>Now I'm really lost.  p, which was a constant before, is now apparently a function.  </p>
+
+<p>So for Type 7 quantiles, the default...</p>
+
+<blockquote>
+  <p>Type 7</p>
+  
+  <p>p(k) = (k - 1) / (n - 1). In this case, p(k) = mode[F(x[k])]. This is used by S. </p>
+</blockquote>
+
+<p>Anyone want to help me out?  In particular I'm confused by the notation of p being a function and a constant, what the heck <em>m</em> is, and now to calculate j for some particular <em>p</em>.  </p>
+
+<p>I hope that based on the answers here, we can submit some revised documentation that better explains what is going on here.  </p>
+
+<p><a href=""https://svn.r-project.org/R/trunk/src/library/stats/R/quantile.R"" rel=""noreferrer"">quantile.R source code</a>
+or type:  quantile.default</p>
+"
+103312,NA,2008-09-19T16:09:26Z,4,How to test for the EOF flag in R?,"<p>How can I test for the <code>EOF</code> flag in R? </p>
+
+<p>For example:</p>
+
+<pre><code>f &lt;- file(fname, ""rb"")
+while (???) {
+    a &lt;- readBin(f, ""int"", n=1)
+}
+</code></pre>
+"
+255697,1941213,2008-11-01T15:48:30Z,4,Is there an R package for learning a Dirichlet prior from counts data,"<p>I'm looking for a an <code>R</code> package which can be used to train a Dirichlet prior from counts data.  I'm asking for a colleague who's using <code>R</code>, and don't use it myself, so I'm not too sure how to look for packages.  It's a bit hard to search for, because ""R"" is such a nonspecific search string.  There doesn't seem to be anything on <a href=""http://cran.r-project.org/web/packages/index.html"" rel=""nofollow noreferrer"">CRAN</a>, but are there any other places to look?</p>
+"
+359438,2173,2008-12-11T14:02:06Z,4,Optimization packages for R,"<p>Does anyone know of any optimization packages out there for R (similar to NUOPT for S+)?</p>
+"
+439526,37751,2009-01-13T15:58:48Z,23,Thinking in Vectors with R,"<p>I know that R works most efficiently with vectors and looping should be avoided. I am having a hard time teaching myself to actually write code this way. I would like some ideas on how to 'vectorize' my code. Here's an example of creating 10 years of sample data for 10,000 non unique combinations of state (<code>st</code>), plan1 (<code>p1</code>) and plan2 (<code>p2</code>):</p>
+
+<pre><code>st&lt;-NULL
+p1&lt;-NULL
+p2&lt;-NULL

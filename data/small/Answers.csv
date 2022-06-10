@@ -1,0 +1,101 @@
+Id,OwnerUserId,CreationDate,ParentId,Score,IsAcceptedAnswer,Body
+79741,3259,2008-09-17T03:43:22Z,79709,-1,False,"<p>It's tough to say definitively without knowing the language/compiler used.  However, if you can simply pass a pointer/reference to the object that you're creating, then the size of the object itself has nothing to do with the speed of the function calls.  Manipulating this data down the road could be a different story.</p>
+"
+79768,6043,2008-09-17T03:48:29Z,79709,9,False,"<p>use variables in the outer function instead of global variables. This gets you the best of both approaches: you're not mutating global state, and you're not copying a big wad of data. If you have to exit early, just return the partial results.</p>
+
+<p>(See the ""Scope"" section in the R manual: <a href=""http://cran.r-project.org/doc/manuals/R-intro.html#Scope"" rel=""noreferrer"">http://cran.r-project.org/doc/manuals/R-intro.html#Scope</a>)</p>
+"
+79779,8002,2008-09-17T03:49:36Z,79709,0,False,"<p>Third approach: inner function returns a reference to the large array, which the next statement inside the loop then dereferences and stores wherever it's needed (ideally with a single pointer store and not by having to memcopy the entire array).</p>
+
+<p>This gets rid of both the side effect and the passing of large datastructures.</p>
+"
+79788,NA,2008-09-17T03:51:30Z,79709,4,False,"<p>It's not going to make much difference to memory use, so you might as well make the code clean.</p>
+
+<p>Since R has copy-on-modify for variables, modifying the global object will have the same memory implications as passing something up in return values.</p>
+
+<p>If you store the outputs in a database (or even in a file) you won't have the memory use issues, and the data will be incrementally available as it is created, rather than just at the end.  Whether it's faster with the database depends primarily on how much memory you are using: is the reduction is garbage collection going to pay for the cost of writing to disk.</p>
+
+<p>There are both time and memory profilers in R, so you can see empirically what the impacts are.</p>
+"
+79827,14257,2008-09-17T03:58:26Z,79709,1,False,"<p>I'm not sure I understand the question, but I have a couple of solutions.</p>
+
+<ol>
+<li><p>Inside the function, create a list of the vectors and return that.</p></li>
+<li><p>Inside the function, create an environment and store all the vectors inside of that.  Just make sure that you return the environment in case of errors.</p></li>
+</ol>
+
+<p>in R:</p>
+
+<pre><code>help(environment)
+
+# You might do something like this:
+
+outer &lt;- function(datasets) {
+  # create the return environment
+  ret.env &lt;- new.env()
+  for(set in dataset) {
+    tmp &lt;- inner(set)
+    # check for errors however you like here.  You might have inner return a list, and
+    # have the list contain an error component
+    assign(set, tmp, envir=ret.env)
+  }
+  return(ret.env)
+}
+
+#The inner function might be defined like this
+
+inner &lt;- function(dataset) {
+  # I don't know what you are doing here, but lets pretend you are reading a data file
+  # that is named by dataset
+  filedata &lt;- read.table(dataset, header=T)
+  return(filedata)
+}
+</code></pre>
+
+<p>leif</p>
+"
+79893,14928,2008-09-17T04:11:08Z,79709,6,False,"<p>Remember your Knuth.  ""Premature optimization is the root of all programming evil.""</p>
+
+<p>Try the side effect free version.  See if it meets your performance goals.  If it does, great, you don't have a problem in the first place; if it doesn't, then use the side effects, and make a note for the next programmer that your hand was forced.</p>
+"
+83162,15842,2008-09-17T13:27:17Z,77434,70,False,"<p>If you're looking for something as nice as Python's x[-1] notation, I think you're out of luck.  The standard idiom is</p>
+
+<pre><code>x[length(x)]  
+</code></pre>
+
+<p>but it's easy enough to write a function to do this:</p>
+
+<pre><code>last &lt;- function(x) { return( x[length(x)] ) }
+</code></pre>
+
+<p>This missing feature in R annoys me too!</p>
+"
+83222,1428,2008-09-17T13:32:45Z,77434,236,False,"<p>I use the <code>tail()</code> function:</p>
+
+<pre><code>tail(vector, n=1)
+</code></pre>
+
+<p>The nice thing with <code>tail()</code> is that it works on dataframes too, unlike the <code>x[length(x)]</code> idiom.</p>
+"
+86804,NA,2008-09-17T19:39:37Z,79709,1,False,"<p>FYI, here's a full sample toy solution that avoids side effects:</p>
+
+<pre><code>outerfunc &lt;- function(names) {
+  templist &lt;- list()
+  for (aname in names) {
+    templist[[aname]] &lt;- innerfunc(aname)
+  }
+  templist
+}
+
+innerfunc &lt;- function(aname) {
+  retval &lt;- NULL
+  if (""one"" %in% aname) retval &lt;- c(1)
+  if (""two"" %in% aname) retval &lt;- c(1,2)
+  if (""three"" %in% aname) retval &lt;- c(1,2,3)
+  retval
+}
+
+names &lt;- c(""one"",""two"",""three"")
+
+name_vals &lt;- outerfunc(names)
+
