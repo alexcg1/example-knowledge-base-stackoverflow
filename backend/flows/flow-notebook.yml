@@ -1,0 +1,20 @@
+jtype: Flow
+with:
+  protocol: grpc
+executors:
+  - name: encoder
+    uses: jinahub+sandbox://SpacyTextEncoder/v0.4
+    uses_with:
+      model_name: 'en_core_web_md'
+    resources:
+      memory: 8G
+  - name: indexer
+    uses: jinahub://AnnLiteIndexer/0.3.0
+    uses_with:
+      dim: 300
+      columns:
+        - ['CreationDate', 'float']
+        - ['Score', 'int']
+        - ['IsAcceptedAnswer', 'str']
+    uses_metas:
+      workspace: workspace
