@@ -9,6 +9,7 @@ executors:
     resources:
       memory: 8G
   - name: indexer
+    install_requirements: true
     uses: jinahub://AnnLiteIndexer/0.3.0
     uses_with:
       dim: 300
